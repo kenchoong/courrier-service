@@ -1,0 +1,60 @@
+[
+  {
+    "id": "OFFER1",
+    "offerCode": "OFR001",
+    "offerName": "10% off for courrier fees",
+    "discountType": "PERCENTAGE",
+    "discountAmount": 10,
+    "criteria": {
+      "weight": {
+        "unitCode": "kg",
+        "min": 70,
+        "max": 100
+      },
+      "distance": {
+        "unitCode": "km",
+        "min": 200,
+        "max": null
+      }
+    }
+  },
+  {
+    "id": "OFFER2",
+    "offerCode": "OFR002",
+    "offerName": "7% off for courrier fees",
+    "discountType": "PERCENTAGE",
+    "discountAmount": 7,
+    "criteria": {
+      "weight": {
+        "unitCode": "kg",
+        "min": 50,
+        "max": 150
+      },
+      "distance": {
+        "unitCode": "km",
+        "min": 100,
+        "max": 250
+      }
+    }
+  },
+  {
+    "id": "OFFER3",
+    "offerCode": "OFR003",
+    "offerName": "5% off for courrier fees",
+    "distanceCode": "km",
+    "discountType": "PERCENTAGE",
+    "discountAmount": 5,
+    "criteria": {
+      "weight": {
+        "unitCode": "kg",
+        "min": 10,
+        "max": 150
+      },
+      "distance": {
+        "unitCode": "km",
+        "min": 50,
+        "max": 250
+      }
+    }
+  }
+]
