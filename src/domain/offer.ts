@@ -8,13 +8,13 @@ export enum DiscountType {
 export interface Weight {
   unitCode: string
   min: number
-  max: number
+  max: number | null
 }
 
 export interface Distance {
   unitCode: string
   min: number
-  max: number
+  max: number | null
 }
 
 export interface OfferCriteria {
