@@ -1,0 +1,35 @@
+{
+  // Some problem need to take note
+  // https://stackoverflow.com/a/73145888/4332049
+  // https://stackoverflow.com/a/66237784/4332049
+  "compilerOptions": {
+    "target": "es2018",
+    "lib": ["es2017", "dom"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "noImplicitAny": true,
+    "outDir": "./dist",
+    "types": ["reflect-metadata", "node", "inquirer", "jest"],
+    "strictPropertyInitialization": false,
+    "removeComments": true
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node",
+    "experimentalJsonModules": true
+  },
+  "include": ["src/**/*", "**/*.spec.ts", "**/*.test.ts"],
+  "exclude": ["node_modules", "dist"]
+}
