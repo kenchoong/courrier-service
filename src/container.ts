@@ -19,6 +19,10 @@ container.bind(TYPES.Enquirer).to(EnquireProvider).inSingletonScope()
 container.bind(TYPES.InquiryService).to(InquireService)
 container.bind(TYPES.DeliveryCostService).to(DeliveryCostService)
 
+container.bind(TYPES.DataTransformer).to(DataTransformer)
+container.bind(TYPES.CliTable).to(CliTable)
 
+container.bind<OfferRepository>(TYPES.OfferRepository).to(OfferDbRepository)
+container.bind(TYPES.OfferService).to(OfferService)
 
 export { container }
