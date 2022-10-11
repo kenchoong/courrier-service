@@ -41,7 +41,6 @@
     "id": "OFFER3",
     "offerCode": "OFR003",
     "offerName": "5% off for courrier fees",
-    "distanceCode": "km",
     "discountType": "PERCENTAGE",
     "discountAmount": 5,
     "criteria": {
