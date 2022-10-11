@@ -118,21 +118,6 @@ export class InquireService {
   }
 
   isNumeric(value: string, message: string) {
-    // console.log(
-    //   value &&
-    //     value.length &&
-    //     !isNaN(parseFloat(value)) &&
-    //     isFinite(parseInt(value))
-    //     ? true
-    //     : message,
-    // )
-    // return value &&
-    //   value.length &&
-    //   !isNaN(parseFloat(value)) &&
-    //   isFinite(parseInt(value))
-    //   ? true
-    //   : message
-
     if (
       value &&
       value.length &&
