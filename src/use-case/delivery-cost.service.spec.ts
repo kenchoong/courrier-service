@@ -75,12 +75,6 @@ describe('DeliveryCostService', () => {
   })
 
   it('should calculate percentage discount', () => {
-    // const deliveryCostService = new DeliveryCostService(
-    //   inquiryService,
-    //   offerRepository,
-    //   cliTable,
-    // )
-
     const result = deliveryCostService.calculateDiscount(
       DiscountType.PERCENTAGE,
       100,
@@ -94,12 +88,6 @@ describe('DeliveryCostService', () => {
   })
 
   it('should calculate fixed discount', () => {
-    // const deliveryCostService = new DeliveryCostService(
-    //   inquiryService,
-    //   offerRepository,
-    //   cliTable,
-    // )
-
     const result = deliveryCostService.calculateDiscount(
       DiscountType.FLAT,
       100,
@@ -113,60 +101,30 @@ describe('DeliveryCostService', () => {
   })
 
   it('should check is between range', () => {
-    //const deliveryCostService = new DeliveryCostService(
-    //inquiryService,
-    //offerRepository,
-    //cliTable,
-    //)
-
     const result = deliveryCostService.isBetweenRange(5, 0, 10)
 
     expect(result).toEqual(true)
   })
 
   it('should check is not between range', () => {
-    //const deliveryCostService = new DeliveryCostService(
-    //inquiryService,
-    //offerRepository,
-    //cliTable,
-    //)
-
     const result = deliveryCostService.isBetweenRange(15, 5, 10)
 
     expect(result).toEqual(false)
   })
 
   it('bigger than min - should check is between range even max value is null', () => {
-    //const deliveryCostService = new DeliveryCostService(
-    //inquiryService,
-    //offerRepository,
-    //cliTable,
-    //)
-
     const result = deliveryCostService.isBetweenRange(15, 5, null)
 
     expect(result).toEqual(true)
   })
 
   it('smaller than min - should check is between range even max value is null', () => {
-    //const deliveryCostService = new DeliveryCostService(
-    //inquiryService,
-    //offerRepository,
-    //cliTable,
-    //)
-
     const result = deliveryCostService.isBetweenRange(4, 5, null)
 
     expect(result).toEqual(false)
   })
 
   it('PKG 1: Testcase - getPackagePriceDiscount - should get package price discount', async () => {
-    //const deliveryCostService = new DeliveryCostService(
-    //inquiryService,
-    //offerRepository,
-    //cliTable,
-    //)
-
     mockedOfferRepository.findByCode.mockResolvedValue(null)
 
     const result = await deliveryCostService.getPackagePriceDiscount({
@@ -192,12 +150,6 @@ describe('DeliveryCostService', () => {
   })
 
   it('PKG 3: Testcase - getPackagePriceDiscount - should get package price discount', async () => {
-    //const deliveryCostService = new DeliveryCostService(
-    //inquiryService,
-    //offerRepository,
-    //cliTable,
-    //)
-
     mockedOfferRepository.findByCode.mockResolvedValue(mockedOffer003)
 
     const result = await deliveryCostService.getPackagePriceDiscount({
@@ -225,12 +177,6 @@ describe('DeliveryCostService', () => {
   })
 
   it('PKG 4: Testcase - getPackagePriceDiscount - found offer, but weight not within range', async () => {
-    //const deliveryCostService = new DeliveryCostService(
-    //inquiryService,
-    //offerRepository,
-    //cliTable,
-    //)
-
     mockedOfferRepository.findByCode.mockResolvedValue(mockedOffer003)
 
     const result = await deliveryCostService.getPackagePriceDiscount({
@@ -256,12 +202,6 @@ describe('DeliveryCostService', () => {
   })
 
   it('PKG 5: Testcase - getPackagePriceDiscount - found offer, but distance not within range', async () => {
-    //const deliveryCostService = new DeliveryCostService(
-    //inquiryService,
-    //offerRepository,
-    //cliTable,
-    //)
-
     mockedOfferRepository.findByCode.mockResolvedValue(mockedOffer003)
 
     const result = await deliveryCostService.getPackagePriceDiscount({
@@ -320,6 +260,7 @@ describe('DeliveryCostService', () => {
       1,
     )
 
+    // TODO: Need to figure out the for loop
     // expect(
     //   mockedInquireService.askQuestionsForDeliveryCost,
     // ).toHaveBeenCalledTimes(2)
