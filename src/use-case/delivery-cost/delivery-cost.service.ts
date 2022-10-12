@@ -1,14 +1,14 @@
 import { inject, injectable } from 'inversify'
-import { DiscountType } from '../domain/offer'
-import * as repository from '../domain/repository'
-import { CliTable } from '../libs/cli-table'
-import { TYPES } from '../types'
+import { DiscountType } from '../../domain/offer'
+import * as repository from '../../domain/repository'
+import { CliTable } from '../../libs/cli-table'
+import { TYPES } from '../../types'
 import {
   AfterDiscount,
   DeliveryCostCalculatedDetails,
   PackageDto,
-} from './dto/delivery-cost.dto'
-import { InquireService } from './inquire.service'
+} from './delivery-cost.dto'
+import { InquireService } from '../inquire/inquire.service'
 
 @injectable()
 export class DeliveryCostService {

@@ -1,10 +1,10 @@
 import 'reflect-metadata'
 import { mock } from 'jest-mock-extended'
-import { DeliveryCostService } from '../../use-case/delivery-cost.service'
+import { DeliveryCostService } from '../../use-case/delivery-cost/delivery-cost.service'
 import {
   FunctionalityType,
   InquireService,
-} from '../../use-case/inquire.service'
+} from '../../use-case/inquire/inquire.service'
 import { Cli } from './cli'
 import { container } from '../../container'
 import { TYPES } from '../../types'

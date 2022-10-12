@@ -7,9 +7,9 @@ import { CliTable } from './libs/cli-table'
 import { DataTransformer } from './libs/data-transformer'
 import { EnquireProvider } from './libs/enquirer'
 import { TYPES } from './types'
-import { DeliveryCostService } from './use-case/delivery-cost.service'
-import { InquireService } from './use-case/inquire.service'
-import { OfferService } from './use-case/offer.service'
+import { DeliveryCostService } from './use-case/delivery-cost/delivery-cost.service'
+import { InquireService } from './use-case/inquire/inquire.service'
+import { OfferService } from './use-case/offer/offer.service'
 
 const container = new Container()
 

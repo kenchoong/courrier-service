@@ -1,7 +1,8 @@
 import { inject, injectable } from 'inversify'
 import Enquirer from 'enquirer'
-import { TYPES } from '../types'
-import { EnquireProvider } from '../libs/enquirer'
+import { TYPES } from '../../types'
+import { EnquireProvider } from '../../libs/enquirer'
+import { PackageDto } from '../delivery-cost/delivery-cost.dto'
 //import { Select } from 'enquirer'
 
 export enum FunctionalityType {
@@ -111,6 +112,35 @@ export class InquireService {
             value,
             ' Please Enter the no of packages (In number only)',
           ),
+      },
+    ]
+
+    return this.enquirer.prompt(questions)
+  }
+
+  async askVechileQuestions(): Promise<any> {
+    const questions = [
+      {
+        name: 'noOfVechiles',
+        type: 'input',
+        message: 'Enter No of vechiles you have (Number only)',
+        validate: (value: string) =>
+          this.isNumeric(value, 'Please enter the package Weight'),
+      },
+      {
+        name: 'maxSpeed',
+        type: 'input',
+        message: ' Enter Maxium speed of each vechile (km/hr, number only)',
+        validate: (value: string) =>
+          this.isNumeric(value, 'Please enter the package Weight'),
+      },
+      {
+        name: 'maxCarriableWeight',
+        type: 'input',
+        message:
+          'Enter maximum weight each vechile can carry (kg, Number only)',
+        validate: (value: string) =>
+          this.isNumeric(value, 'Please max load of each vechile'),
       },
     ]
 

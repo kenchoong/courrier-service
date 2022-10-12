@@ -1,10 +1,10 @@
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../../types'
-import { DeliveryCostService } from '../../use-case/delivery-cost.service'
+import { DeliveryCostService } from '../../use-case/delivery-cost/delivery-cost.service'
 import {
   FunctionalityType,
   InquireService,
-} from '../../use-case/inquire.service'
+} from '../../use-case/inquire/inquire.service'
 
 export interface ICli {
   start(): void
