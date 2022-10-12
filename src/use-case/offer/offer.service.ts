@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify'
-import * as repository from '../domain/repository'
-import { TYPES } from '../types'
+import * as repository from '../../domain/repository'
+import { TYPES } from '../../types'
 
 @injectable()
 export class OfferService {

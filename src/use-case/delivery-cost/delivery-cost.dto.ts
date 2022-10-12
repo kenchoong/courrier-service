@@ -6,6 +6,10 @@ export class PackageDto {
   baseDeliveryCost: number
 }
 
+export class PackageDtoForTime extends PackageDto {
+  sequence: number
+}
+
 export interface AfterDiscount {
   totalDiscountedAmount: number
   totalDeliveryCostAfterDiscount: number

@@ -1,10 +1,10 @@
 import 'reflect-metadata'
 import { mock } from 'jest-mock-extended'
 import { OfferService } from './offer.service'
-import { container } from '../container'
-import { TYPES } from '../types'
-import { OfferRepository } from '../domain/repository'
-import { DiscountType } from '../domain/offer'
+import { container } from '../../container'
+import { DiscountType } from '../../domain/offer'
+import { OfferRepository } from '../../domain/repository'
+import { TYPES } from '../../types'
 
 const mockedOfferService = mock<OfferService>()
 const mockedOfferRepository = mock<OfferRepository>()

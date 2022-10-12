@@ -1,8 +1,8 @@
 import 'reflect-metadata'
 import { mock } from 'jest-mock-extended'
 import { InquireService } from './inquire.service'
-import { container } from '../container'
-import { TYPES } from '../types'
+import { container } from '../../container'
+import { TYPES } from '../../types'
 
 const mockedInquireService = mock<InquireService>()
 
