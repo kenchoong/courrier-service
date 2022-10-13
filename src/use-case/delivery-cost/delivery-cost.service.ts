@@ -78,6 +78,7 @@ export class DeliveryCostService {
     const weightMultiplier = 10
     const distanceMultiplier = 5
 
+    // todo: environment variable
     const weightCost = weightInKg * weightMultiplier
     const distanceCost = distanceInKm * distanceMultiplier
 
