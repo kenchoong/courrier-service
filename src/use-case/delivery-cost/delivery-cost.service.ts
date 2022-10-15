@@ -9,6 +9,7 @@ import {
   PackageDto,
 } from './delivery-cost.dto'
 import { InquireService } from '../inquire/inquire.service'
+import { roundOff } from '../delivery-time/utils/get-package-combo-trip-time'
 
 @injectable()
 export class DeliveryCostService {
@@ -82,7 +83,6 @@ export class DeliveryCostService {
     const weightCost = weightInKg * weightMultiplier
     const distanceCost = distanceInKm * distanceMultiplier
 
-    console.log(baseDeliveryCost, weightCost, distanceCost)
     const totalDeliveryCostBeforeDiscount =
       +baseDeliveryCost + weightCost + distanceCost
 
@@ -110,8 +110,14 @@ export class DeliveryCostService {
         totalDeliveryCostAfterDiscount =
           calculatedAmount.totalDeliveryCostAfterDiscount
       } else {
-        console.log('Offer criteria not matched')
+        console.log(
+          `PackageId ${packageId} - Offer with code ${offerCode} criteria not match`,
+        )
       }
+    } else {
+      console.log(
+        `PackageId ${packageId} - Offer with code ${offerCode} not found`,
+      )
     }
 
     return {
@@ -148,8 +154,8 @@ export class DeliveryCostService {
     }
 
     return {
-      totalDiscountedAmount,
-      totalDeliveryCostAfterDiscount,
+      totalDiscountedAmount: roundOff(totalDiscountedAmount),
+      totalDeliveryCostAfterDiscount: roundOff(totalDeliveryCostAfterDiscount),
     }
   }
 }
