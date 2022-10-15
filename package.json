@@ -11,6 +11,9 @@
     "start": "node ./bin/main.js",
     "dev": "ts-node ./src/main.ts",
     "test": "tsc && node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:time": "tsc && node --experimental-vm-modules node_modules/jest/bin/jest.js --testNamePattern DeliveryTimeService",
+    "test:cost": "tsc && node --experimental-vm-modules node_modules/jest/bin/jest.js --testNamePattern DeliveryCostService",
+    "test:assign": "tsc && node --experimental-vm-modules node_modules/jest/bin/jest.js --testNamePattern assignVechileForThisTrip",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
   },
   "prettier": {

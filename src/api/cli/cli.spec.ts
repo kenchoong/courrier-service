@@ -20,6 +20,7 @@ const mockedOfferService = mock<OfferService>()
 describe('Cli', () => {
   let cli: Cli
   let deliveryCostService: DeliveryCostService
+  let deliveryTimeController: DeliveryTimeController
   let inquireService: InquireService
   let offerService: OfferService
   beforeEach(() => {
@@ -30,12 +31,18 @@ describe('Cli', () => {
     container
       .rebind(TYPES.DeliveryCostService)
       .toConstantValue(mockedDeliveryCostService)
+    container
+      .rebind(TYPES.DeliveryTimeController)
+      .toConstantValue(mockedDeliveryTimeController)
 
     container.rebind(TYPES.OfferService).toConstantValue(mockedOfferService)
 
     cli = container.get<Cli>(TYPES.Cli)
     deliveryCostService = container.get<DeliveryCostService>(
       TYPES.DeliveryCostService,
+    )
+    deliveryTimeController = container.get<DeliveryTimeController>(
+      TYPES.DeliveryTimeController,
     )
     inquireService = container.get<InquireService>(TYPES.InquiryService)
     offerService = container.get<OfferService>(TYPES.OfferService)
@@ -45,6 +52,7 @@ describe('Cli', () => {
     expect(cli).toBeDefined()
     expect(deliveryCostService).toBeDefined()
     expect(inquireService).toBeDefined()
+    expect(deliveryTimeController).toBeDefined()
   })
 
   it('should call getDeliveryCost', async () => {

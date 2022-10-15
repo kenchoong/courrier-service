@@ -5,6 +5,7 @@ const TYPES = {
   DeliveryCostService: Symbol.for('DeliveryService'),
 
   DeliveryTimeService: Symbol.for('DeliveryTimeService'),
+  DeliveryTimeController: Symbol.for('DeliveryTimeController'),
 
   OfferService: Symbol.for('OfferService'),
   OfferRepository: Symbol.for('OfferRepository'),
