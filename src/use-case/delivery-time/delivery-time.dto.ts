@@ -10,6 +10,14 @@ export interface PackageDtoForTime extends PackageDto {
   sequence: number
 }
 
+export interface PackageTimeNeededDto extends PackageDtoForTime {
+  timeNeeded: number
+}
+
+export interface PackageDeliveredTimeDto extends PackageDtoForTime {
+  estimatedDeliveryTime: number
+}
+
 export class CalculateDeliveryTimeInputDto {
   vechileDetails: VechileDetailDto
   packageList: PackageDtoForTime[]

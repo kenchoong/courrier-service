@@ -1,90 +1,153 @@
 import { injectable, inject } from 'inversify'
-import { CliTable } from '../../libs/cli-table'
 import { TYPES } from '../../types'
-import { PackageDto } from '../delivery-cost/delivery-cost.dto'
 import { DeliveryCostService } from '../delivery-cost/delivery-cost.service'
-import { InquireService } from '../inquire/inquire.service'
+import { roundOff } from '../utils/utils'
 import {
   CalculateDeliveryTimeInputDto,
+  PackageDeliveredTimeDto,
   PackageDtoForTime,
-  VechileDetailDto,
+  PackageTimeNeededDto,
 } from './delivery-time.dto'
+import {
+  assignVechileForThisTrip,
+  VechileStateDto,
+} from './utils/assign-vehicle'
 import { getPackageComboPerTrip } from './utils/get-package-combo-per-trip'
+import { getShipmentArrivalTime } from './utils/get-package-combo-trip-time'
+
+export class DeliveryTimeResultDto {
+  packageId: string
+  totalDiscountedAmount: number
+  totalDeliveryCostAfterDiscount: number
+  estimatedDeliveryTime: number
+}
 
 @injectable()
 export class DeliveryTimeService {
   constructor(
-    @inject(TYPES.InquiryService)
-    private inquiryService: InquireService,
-
     @inject(TYPES.DeliveryCostService)
     private deliveryCostService: DeliveryCostService,
-
-    @inject(TYPES.CliTable)
-    private cliTable: CliTable,
   ) {}
 
-  async calculateEstimatedDeliveryTime(input: CalculateDeliveryTimeInputDto) {
+  async calculateEstimatedDeliveryTime(
+    input: CalculateDeliveryTimeInputDto,
+  ): Promise<DeliveryTimeResultDto[]> {
     const { vechileDetails, packageList } = input
     const { noOfVechiles, maxSpeed, maxCarriableWeight } = vechileDetails
 
-    //this.prototype()
-
     // Initialize remaining package list,
     // at begining is the package list itself
-    const remainingPackageList = [...packageList]
+    let remainingPackageList = [...packageList]
 
-    // Initialize current waiting time
-    let currentWaitingTime = 0
-
-    // Initialize current available vechile
-    let currentAvailableVechile = noOfVechiles
-
+    // Get the delivery combo for each trip
+    // package closest to maxCarriableWeight go first
+    // delivery sequence store in an array
+    const deliveryComboSequence: PackageDtoForTime[][] = []
     while (remainingPackageList.length > 0) {
-      // Get the package list to be delivered in 1 trip
-      const packageComboPerTrip = getPackageComboPerTrip(
+      const combo = getPackageComboPerTrip(
         remainingPackageList,
         maxCarriableWeight,
       )
+
+      deliveryComboSequence.push(combo)
+
+      remainingPackageList = remainingPackageList.filter(
+        (eachPackage) => !combo.find((eachCombo) => eachCombo === eachPackage),
+      )
     }
-  }
 
-  /**
-   *
-   * @param distanceInKm
-   * @param maxSpeed
-   * @returns number (Time needed to deliver a shipment, in hours, rounded off to 2 digits)
-   */
-  getShipmentArrivalTime(distanceInKm: number, maxSpeed: number) {
-    return this.roundOff(distanceInKm / maxSpeed)
-  }
+    // Initialize an array to represent avaialble vechiles available time
+    let currentVechilesAvailabiltyState: VechileStateDto[] = Array(noOfVechiles)
+      .fill({})
+      .map((_, index) => {
+        return {
+          returningTimeForThisVechile: 0,
+          vechileNo: '0' + (index + 1).toString(),
+        }
+      })
 
-  /**
-   *
-   * @param currentWaitingTime (in hours, CurrentTime in requirement)
-   * @param distanceInKm
-   * @param maxSpeed
-   * @returns number (Next available time for a vechile, in hours, rounded off to 2 digits)
-   */
-  getNextVechileAvailableTime(
-    currentWaitingTime: number,
-    distanceInKm: number,
-    maxSpeed: number,
-  ) {
-    // TODO: environment variable
-    const waitingTimeMultiplier = 2
-    const timeTaken = this.getShipmentArrivalTime(distanceInKm, maxSpeed)
+    const packagesEstimatedDeliverTime: PackageDeliveredTimeDto[] = []
 
-    return currentWaitingTime + waitingTimeMultiplier * timeTaken
-  }
+    for (const packageComboForThisTrip of deliveryComboSequence) {
+      // Get each package need how many time to deliver
+      const packageNeedTimeList: PackageTimeNeededDto[] =
+        packageComboForThisTrip.map((packageDto) => {
+          const timeNeeded = getShipmentArrivalTime(
+            packageDto.distanceInKm,
+            maxSpeed,
+          )
 
-  /**
-   * Roundoff estimated delivery time upto 2 digits
-   * @example 3.456 becomes 3.45
-   * @param input number
-   * @returns rounded off value
-   */
-  roundOff(input: number) {
-    return Math.trunc(input * 100) / 100
+          return {
+            ...packageDto,
+            timeNeeded,
+          }
+        })
+
+      // assign vechile for this package combo
+      // return the vechile number
+      // the time needed for this vechile to return
+      const {
+        assignedVechileNo,
+        nextAvailableTimeForVechile,
+        currentWaitingTime,
+      } = assignVechileForThisTrip(
+        currentVechilesAvailabiltyState,
+        packageNeedTimeList,
+      )
+
+      // get estimated delivery time of each package
+      // based on the vechile assigned
+      // store in an array
+      packageNeedTimeList.map((packageTimeNeed) => {
+        const estimatedDeliveryTime =
+          currentWaitingTime + packageTimeNeed.timeNeeded
+
+        packagesEstimatedDeliverTime.push({
+          ...packageTimeNeed,
+          estimatedDeliveryTime,
+        })
+      })
+
+      // update the vechile state
+      // cause 1 vechile is assigned to this trip
+      // store return time for this vechile in the state
+      let objIndex = currentVechilesAvailabiltyState.findIndex(
+        (obj) => obj.vechileNo == assignedVechileNo,
+      )
+      currentVechilesAvailabiltyState[objIndex].returningTimeForThisVechile =
+        nextAvailableTimeForVechile
+    }
+
+    // sort the package list by sequence
+    const result = packagesEstimatedDeliverTime.sort(
+      (previos, current) => previos.sequence - current.sequence,
+    )
+
+    const deliveryTimeResult: DeliveryTimeResultDto[] = []
+
+    for (const packageDeliveredTime of result) {
+      // calculate the total delivery cost
+      // for each package
+      const { totalDiscountedAmount, totalDeliveryCostAfterDiscount } =
+        await this.deliveryCostService.getPackagePriceDiscount({
+          baseDeliveryCost: packageDeliveredTime.baseDeliveryCost,
+          packageId: packageDeliveredTime.packageId,
+          weightInKg: packageDeliveredTime.weightInKg,
+          distanceInKm: packageDeliveredTime.distanceInKm,
+          offerCode: packageDeliveredTime.offerCode,
+        })
+
+      // store calculation result in an array for return
+      deliveryTimeResult.push({
+        packageId: packageDeliveredTime.packageId,
+        totalDeliveryCostAfterDiscount,
+        totalDiscountedAmount,
+        estimatedDeliveryTime: roundOff(
+          packageDeliveredTime.estimatedDeliveryTime,
+        ),
+      })
+    }
+
+    return deliveryTimeResult
   }
 }
