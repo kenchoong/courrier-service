@@ -4,6 +4,8 @@ import { container } from '../../container'
 import { DataTransformer } from '../../libs/data-transformer'
 import { TYPES } from '../../types'
 import { OfferDbRepository } from './offer'
+import data from './offers.json' assert { type: 'json' }
+import { DiscountType, Offer } from '../../domain/offer'
 
 const mockedOfferDbRepository = mock<OfferDbRepository>()
 const mockedDataTransformer = mock<DataTransformer>()
@@ -13,7 +15,7 @@ const expected = [
     id: '1234',
     offerCode: 'offercode1',
     offerName: 'offercode1',
-    discountType: 'PERCENTAGE',
+    discountType: DiscountType.PERCENTAGE,
     discountAmount: 5,
     criteria: {
       weight: {
@@ -32,7 +34,7 @@ const expected = [
     id: '12345',
     offerCode: 'offercode2',
     offerName: 'offercode2',
-    discountType: 'PERCENTAGE',
+    discountType: DiscountType.PERCENTAGE,
     discountAmount: 5,
     criteria: {
       weight: {
@@ -91,5 +93,19 @@ describe('OfferDbRepository', () => {
 
     // assert
     expect(actual).toEqual(expected[1])
+    expect(mockedDataTransformer.transformData).toBeCalled()
+  })
+
+  it('should create offers', async () => {
+    // arrange
+    const offerRepo = new OfferDbRepository(dataTransformer)
+
+    // act
+    const actual = await offerRepo.create(expected[0])
+
+    // assert
+    expect(actual).toEqual(expected[0])
+    expect(mockedDataTransformer.convertDataToJson).toBeCalled()
+    expect(mockedDataTransformer.writeToFile).toBeCalled()
   })
 })
