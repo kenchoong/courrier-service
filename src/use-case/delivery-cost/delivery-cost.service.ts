@@ -9,7 +9,7 @@ import {
   PackageDto,
 } from './delivery-cost.dto'
 import { InquireService } from '../inquire/inquire.service'
-import { roundOff } from '../delivery-time/utils/get-package-combo-trip-time'
+import { roundOff } from '../utils/utils'
 
 @injectable()
 export class DeliveryCostService {
