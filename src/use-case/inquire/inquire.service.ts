@@ -147,6 +147,59 @@ export class InquireService {
     return this.enquirer.prompt(questions)
   }
 
+  async askCreateOfferQuestions(): Promise<any> {
+    const questions = [
+      {
+        name: 'id',
+        type: 'input',
+        message: 'Put a unique id for the offer',
+      },
+      {
+        name: 'offerCode',
+        type: 'input',
+        message: 'Enter offer code (Example: OFR001)',
+      },
+      {
+        name: 'discountAmount',
+        type: 'input',
+        message:
+          'How much discount you want to give, Number only (Example: 10 for 10% discount)',
+        validate: (value: string) =>
+          this.isNumeric(value, 'Please enter the discount amount'),
+      },
+      {
+        name: 'minWeight',
+        type: 'input',
+        message: 'Enter minumum weight to get this offer (kg, Number only)',
+        validate: (value: string) =>
+          this.isNumeric(value, 'Please enter the minumum weight'),
+      },
+      {
+        name: 'maxWeight',
+        type: 'input',
+        message: 'Enter maximum weight to get this offer (kg, Number only)',
+        validate: (value: string) =>
+          this.isNumeric(value, 'Please enter the maximum weight'),
+      },
+      {
+        name: 'minDistance',
+        type: 'input',
+        message: 'Enter minumum distance for this offer (km, Number only)',
+        validate: (value: string) =>
+          this.isNumeric(value, 'Please enter the minumum distance'),
+      },
+      {
+        name: 'maxDistance',
+        type: 'input',
+        message: 'Enter maximum distance for this offer (km, Number only)',
+        validate: (value: string) =>
+          this.isNumeric(value, 'Please enter the maximum distance'),
+      },
+    ]
+
+    return this.enquirer.prompt(questions)
+  }
+
   isNumeric(value: string, message: string) {
     if (
       value &&
