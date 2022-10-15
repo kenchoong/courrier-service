@@ -13,7 +13,7 @@ import {
   VechileStateDto,
 } from './utils/assign-vehicle'
 import { getPackageComboPerTrip } from './utils/get-package-combo-per-trip'
-import { getShipmentArrivalTime } from './utils/get-package-combo-trip-time'
+import { getShipmentArrivalTime } from './utils/get-shipment-arrival-time'
 
 export class DeliveryTimeResultDto {
   packageId: string
