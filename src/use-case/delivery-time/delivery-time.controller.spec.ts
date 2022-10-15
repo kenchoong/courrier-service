@@ -1,9 +1,7 @@
 import 'reflect-metadata'
 import { mock } from 'jest-mock-extended'
 import { container } from '../../container'
-import { OfferRepository } from '../../domain/repository'
 import { TYPES } from '../../types'
-import { DeliveryCostService } from '../delivery-cost/delivery-cost.service'
 import { InquireService } from '../inquire/inquire.service'
 import { DeliveryTimeController } from './delivery-time.controller'
 import { DeliveryTimeService } from './delivery-time.service'
@@ -40,21 +38,21 @@ describe('DeliveryTimeController', () => {
 
   it('should get package vechiles details', async () => {
     mockInquireService.askBaseCostNoOfPackages.mockResolvedValue({
-      baseDeliveryCose: 100,
-      noOfPackages: 2,
+      baseDeliveryCost: '100',
+      noOfPackages: '2',
     })
 
     mockInquireService.askQuestionsForDeliveryCost
       .mockResolvedValueOnce({
         packageId: 'pkg1',
-        weightInKg: 50,
-        distanceInKm: 30,
+        weightInKg: '50',
+        distanceInKm: '30',
         offerCode: 'off001',
       })
       .mockResolvedValueOnce({
         packageId: 'pkg2',
-        weightInKg: 75,
-        distanceInKm: 125,
+        weightInKg: '75',
+        distanceInKm: '125',
         offerCode: 'off008',
       })
 
@@ -63,7 +61,49 @@ describe('DeliveryTimeController', () => {
       maxSpeed: 70,
       maxCarriableWeight: 200,
     }
+
+    const mockCalculatedResult = [
+      {
+        packageId: 'pkg1',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 3.98,
+        totalDeliveryCostAfterDiscount: 750,
+      },
+
+      {
+        packageId: 'pkg2',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.78,
+        totalDeliveryCostAfterDiscount: 1475,
+      },
+
+      {
+        packageId: 'pkg3',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 2350,
+      },
+
+      {
+        packageId: 'pkg4',
+        totalDiscountedAmount: 105,
+        estimatedDeliveryTime: 0.85,
+        totalDeliveryCostAfterDiscount: 1395,
+      },
+
+      {
+        packageId: 'pkg5',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 4.18,
+        totalDeliveryCostAfterDiscount: 2125,
+      },
+    ]
+
     mockInquireService.askVechileQuestions.mockResolvedValue(mockVechileDetails)
+
+    mockDeliveryTimeService.calculateEstimatedDeliveryTime.mockResolvedValue(
+      mockCalculatedResult,
+    )
 
     const result = await deliveryTimeController.getPackageVechileDetails()
 
@@ -79,6 +119,7 @@ describe('DeliveryTimeController', () => {
           distanceInKm: 30,
           offerCode: 'off001',
           sequence: 0, // added in in for loop
+          baseDeliveryCost: 100,
         },
         {
           packageId: 'pkg2',
@@ -86,11 +127,11 @@ describe('DeliveryTimeController', () => {
           distanceInKm: 125,
           offerCode: 'off008',
           sequence: 1, // added in in for loop
+          baseDeliveryCost: 100,
         },
       ],
     })
 
-    // TODO:
-    // expect(result).toEqual({})
+    expect(result).toEqual(mockCalculatedResult)
   })
 })

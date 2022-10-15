@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify'
 import { TYPES } from '../../types'
 import { InquireService } from '../inquire/inquire.service'
-import { PackageDtoForTime, VechileDetailDto } from './delivery-time.dto'
+import { PackageDtoForTime } from './delivery-time.dto'
 import { DeliveryTimeService } from './delivery-time.service'
 
 @injectable()
@@ -26,17 +26,23 @@ export class DeliveryTimeController {
         await this.inquiryService.askQuestionsForDeliveryCost()
 
       packageList.push({
-        ...packageDetails,
-        baseDeliveryCost,
+        packageId: packageDetails.packageId,
+        weightInKg: parseFloat(packageDetails.weightInKg),
+        distanceInKm: parseFloat(packageDetails.distanceInKm),
+        offerCode: packageDetails.offerCode,
+        baseDeliveryCost: parseFloat(baseDeliveryCost),
         sequence: index,
       })
     }
 
-    const vechileDetails: VechileDetailDto =
-      await this.inquiryService.askVechileQuestions()
+    const vechileDetail = await this.inquiryService.askVechileQuestions()
 
     return this.deliveryTimeService.calculateEstimatedDeliveryTime({
-      vechileDetails,
+      vechileDetails: {
+        noOfVechiles: parseFloat(vechileDetail.noOfVechiles),
+        maxSpeed: parseFloat(vechileDetail.maxSpeed),
+        maxCarriableWeight: parseFloat(vechileDetail.maxCarriableWeight),
+      },
       packageList,
     })
   }
