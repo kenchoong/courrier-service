@@ -27,13 +27,13 @@
     "criteria": {
       "weight": {
         "unitCode": "kg",
-        "min": 50,
-        "max": 150
+        "min": 100,
+        "max": 250
       },
       "distance": {
         "unitCode": "km",
-        "min": 100,
-        "max": 250
+        "min": 50,
+        "max": 150
       }
     }
   },
