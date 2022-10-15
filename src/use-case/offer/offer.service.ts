@@ -1,4 +1,5 @@
 import { inject, injectable } from 'inversify'
+import { Offer, OfferProps } from '../../domain/offer'
 import * as repository from '../../domain/repository'
 import { TYPES } from '../../types'
 
@@ -11,6 +12,11 @@ export class OfferService {
 
   async listOffers(): Promise<any> {
     const offerData = await this.offerRepository.findAll()
+    return Promise.resolve(offerData)
+  }
+
+  async addOffers(offer: OfferProps): Promise<any> {
+    const offerData = await this.offerRepository.create(offer)
     return Promise.resolve(offerData)
   }
 }
