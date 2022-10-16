@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "start": "node ./bin/main.js",
+    "start": "yarn build && node --experimental-specifier-resolution=node ./dist/main.js",
     "dev": "ts-node ./src/main.ts",
     "test": "tsc && node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:time": "tsc && node --experimental-vm-modules node_modules/jest/bin/jest.js --testNamePattern DeliveryTimeService",
