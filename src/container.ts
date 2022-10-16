@@ -7,6 +7,7 @@ import { CliTable } from './libs/cli-table'
 import { DataTransformer } from './libs/data-transformer'
 import { EnquireProvider } from './libs/enquirer'
 import { TYPES } from './types'
+import { DeliveryCostController } from './use-case/delivery-cost/delivery-cost.controller'
 import { DeliveryCostService } from './use-case/delivery-cost/delivery-cost.service'
 import { DeliveryTimeController } from './use-case/delivery-time/delivery-time.controller'
 import { DeliveryTimeService } from './use-case/delivery-time/delivery-time.service'
@@ -19,7 +20,9 @@ container.bind<ICli>(TYPES.Cli).to(Cli).inSingletonScope()
 
 container.bind(TYPES.Enquirer).to(EnquireProvider).inSingletonScope()
 container.bind(TYPES.InquiryService).to(InquireService)
+
 container.bind(TYPES.DeliveryCostService).to(DeliveryCostService)
+container.bind(TYPES.DeliveryCostController).to(DeliveryCostController)
 
 container.bind(TYPES.DataTransformer).to(DataTransformer)
 container.bind(TYPES.CliTable).to(CliTable)
