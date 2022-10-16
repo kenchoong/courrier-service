@@ -34,9 +34,9 @@ Here will ask the question for which functionality you want to interact with
 
 Note:
 
-- yarn start: will build the js file, production mode, file in dist folder
+- `yarn start`: will build the js file, production mode, file in dist folder
 
-- yarn dev: development mode, run by ts-node
+- `yarn dev`: development mode, run by ts-node
 
 # Run tests
 
