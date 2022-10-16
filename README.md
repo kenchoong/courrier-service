@@ -105,7 +105,7 @@ Problem are solved in different PR, added the comment inside the code for better
 [Feat/delivery time](https://github.com/kenchoong/courrier-service/pull/3)
 
 If you interested
-[Analysis sketch of the problem 02(Github link)](./result/sketch.png)
+[Random analysis sketch of the problem 02(Github link)](./result/sketch.png)
 
 # Architecture
 
