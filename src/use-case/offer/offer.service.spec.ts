@@ -9,7 +9,7 @@ import { TYPES } from '../../types'
 const mockedOfferService = mock<OfferService>()
 const mockedOfferRepository = mock<OfferRepository>()
 
-describe('Offer Service', () => {
+describe('OfferService', () => {
   let service: OfferService
   let repo: OfferRepository
 
@@ -27,48 +27,48 @@ describe('Offer Service', () => {
     expect(service).toBeDefined()
   })
 
+  const expected = [
+    {
+      id: '1234',
+      offerCode: 'offercode1',
+      offerName: 'offercode1',
+      discountType: DiscountType.PERCENTAGE,
+      discountAmount: 5,
+      criteria: {
+        weight: {
+          unitCode: 'kg',
+          min: 0,
+          max: 10,
+        },
+        distance: {
+          unitCode: 'km',
+          min: 0,
+          max: 10,
+        },
+      },
+    },
+    {
+      id: '1234',
+      offerCode: 'offercode1',
+      offerName: 'offercode1',
+      discountType: DiscountType.PERCENTAGE,
+      discountAmount: 5,
+      criteria: {
+        weight: {
+          unitCode: 'kg',
+          min: 0,
+          max: 10,
+        },
+        distance: {
+          unitCode: 'km',
+          min: 0,
+          max: 10,
+        },
+      },
+    },
+  ]
   it('should return a list of offers', async () => {
     // arrange
-    const expected = [
-      {
-        id: '1234',
-        offerCode: 'offercode1',
-        offerName: 'offercode1',
-        discountType: DiscountType.PERCENTAGE,
-        discountAmount: 5,
-        criteria: {
-          weight: {
-            unitCode: 'kg',
-            min: 0,
-            max: 10,
-          },
-          distance: {
-            unitCode: 'km',
-            min: 0,
-            max: 10,
-          },
-        },
-      },
-      {
-        id: '1234',
-        offerCode: 'offercode1',
-        offerName: 'offercode1',
-        discountType: DiscountType.PERCENTAGE,
-        discountAmount: 5,
-        criteria: {
-          weight: {
-            unitCode: 'kg',
-            min: 0,
-            max: 10,
-          },
-          distance: {
-            unitCode: 'km',
-            min: 0,
-            max: 10,
-          },
-        },
-      },
-    ]
 
     const offerService = new OfferService(repo)
     mockedOfferRepository.findAll.mockResolvedValue(expected)
@@ -79,5 +79,17 @@ describe('Offer Service', () => {
     // // assert
     expect(mockedOfferRepository.findAll).toHaveBeenCalledTimes(1)
     expect(offer).toEqual(expected)
+  })
+
+  it('should create offers', async () => {
+    const offerService = new OfferService(repo)
+    mockedOfferRepository.create.mockResolvedValue(expected[0])
+
+    // // act
+    const offer = await offerService.addOffers(expected[0])
+
+    // // assert
+    expect(mockedOfferRepository.create).toHaveBeenCalledTimes(1)
+    expect(offer).toEqual(expected[0])
   })
 })

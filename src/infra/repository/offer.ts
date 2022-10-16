@@ -23,21 +23,34 @@ export class OfferDbRepository implements OfferRepository {
     return Promise.resolve(dataToReturn)
   }
 
-  findAll(): Promise<any> {
+  findAll(): Promise<OfferProps[]> {
     const offerData = this.dataTransformer.transformData(data, Offer)
 
     return Promise.resolve(offerData)
   }
 
-  getById(id: string): Promise<OfferProps> {
-    throw new Error('Method not implemented.')
+  async create(offer: OfferProps): Promise<OfferProps> {
+    const existingOffer = await this.findAll()
+
+    existingOffer.push(offer)
+
+    const dataToReturn = this.dataTransformer.convertDataToJson(existingOffer)
+
+    await this.dataTransformer.writeToFile(
+      'src/infra/repository/offers.json',
+      dataToReturn,
+    )
+
+    return Promise.resolve(offer)
   }
 
-  create(offer: Offer): Promise<OfferProps> {
+  getById(id: string): Promise<OfferProps> {
+    // demo purpose only
     throw new Error('Method not implemented.')
   }
 
   update(offer: Offer): Promise<OfferProps> {
+    // demo purpose only
     throw new Error('Method not implemented.')
   }
 }
