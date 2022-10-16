@@ -24,53 +24,7 @@ export class DeliveryCostService {
     private cliTable: CliTable,
   ) {}
 
-  public async getDeliveryCost() {
-    const { baseDeliveryCost, noOfPackages } =
-      await this.inquiryService.askBaseCostNoOfPackages()
-
-    const cliTable = this.cliTable.initializeTable(
-      ['Package Id', 'Discounted Amount', 'Total after discount'],
-      [20, 20, 20],
-      true,
-    )
-
-    const checkTable = []
-
-    for (let index = 0; index < noOfPackages; index++) {
-      console.log('Enter details of package', index + 1)
-      const packageDetails =
-        await this.inquiryService.askQuestionsForDeliveryCost()
-
-      const {
-        packageId,
-        totalDiscountedAmount,
-        totalDeliveryCostAfterDiscount,
-      } = await this.getPackagePriceDiscount({
-        baseDeliveryCost,
-        ...packageDetails,
-      })
-
-      cliTable.push([
-        packageId,
-        totalDiscountedAmount,
-        totalDeliveryCostAfterDiscount,
-      ])
-
-      // for unit test checking
-      checkTable.push([
-        packageId,
-        totalDiscountedAmount,
-        totalDeliveryCostAfterDiscount,
-      ])
-    }
-
-    console.log('Calculated delivery cost for packages are as follows: ')
-    console.log(cliTable.toString())
-
-    return checkTable
-  }
-
-  public async getPackagePriceDiscount(
+  async getPackagePriceDiscount(
     packageDetails: PackageDto,
   ): Promise<DeliveryCostCalculatedDetails> {
     const { packageId, weightInKg, distanceInKm, offerCode, baseDeliveryCost } =
@@ -128,7 +82,7 @@ export class DeliveryCostService {
     }
   }
 
-  public isBetweenRange(value: number, min: number, max: number | null) {
+  isBetweenRange(value: number, min: number, max: number | null) {
     if (min && max) {
       return value >= min && value <= max
     }
@@ -136,7 +90,7 @@ export class DeliveryCostService {
     return value >= min
   }
 
-  public calculateDiscount(
+  calculateDiscount(
     discountType: DiscountType,
     amountBeforeDiscount: number,
     discountAmount: number,
