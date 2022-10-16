@@ -46,7 +46,7 @@ Note:
 
 Note:
 
-- yarn test:coverage: will collect the coverage, but there are some minor issues (See the [known issues](#known-issues) section below)
+- `yarn test:coverage`: will collect the coverage, but there are some minor issues (See the [known issues](#known-issues) section below)
 
 # Results
 
