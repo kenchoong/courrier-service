@@ -61,6 +61,41 @@ describe('assignVechileForThisTrip', () => {
     })
   })
 
+  it('current time case: STEP 1', () => {
+    const mockedCurrentVechileStates: VechileStateDto[] = [
+      {
+        returningTimeForThisVechile: 0,
+        vechileNo: '01',
+      },
+      {
+        returningTimeForThisVechile: 0,
+        vechileNo: '02',
+      },
+    ]
+
+    const mockedPackageNeedTimeList1 = [
+      {
+        ...mockedPackageNeedTimeList[0],
+        timeNeeded: 0.85,
+      },
+      {
+        ...mockedPackageNeedTimeList[1],
+        timeNeeded: 1.78,
+      },
+    ]
+
+    const result = assignVechileForThisTrip(
+      mockedCurrentVechileStates,
+      mockedPackageNeedTimeList1,
+    )
+
+    expect(result).toEqual({
+      assignedVechileNo: '01',
+      nextAvailableTimeForVechile: 3.56,
+      currentWaitingTime: 0,
+    })
+  })
+
   it('current time case: STEP 2', () => {
     const mockedCurrentVechileStates: VechileStateDto[] = [
       {
