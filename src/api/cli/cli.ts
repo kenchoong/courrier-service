@@ -1,6 +1,7 @@
 import { inject, injectable } from 'inversify'
 import { CliTable } from '../../libs/cli-table'
 import { TYPES } from '../../types'
+import { DeliveryCostController } from '../../use-case/delivery-cost/delivery-cost.controller'
 import { DeliveryCostService } from '../../use-case/delivery-cost/delivery-cost.service'
 import { DeliveryTimeController } from '../../use-case/delivery-time/delivery-time.controller'
 import { DeliveryTimeService } from '../../use-case/delivery-time/delivery-time.service'
@@ -18,8 +19,8 @@ export class Cli implements ICli {
   constructor(
     @inject(TYPES.InquiryService)
     private inquiryService: InquireService,
-    @inject(TYPES.DeliveryCostService)
-    private deliveryCostService: DeliveryCostService,
+    @inject(TYPES.DeliveryCostController)
+    private deliveryCostController: DeliveryCostController,
     @inject(TYPES.DeliveryTimeController)
     private deliveryTimeController: DeliveryTimeController,
     @inject(TYPES.CliTable)
@@ -33,7 +34,23 @@ export class Cli implements ICli {
 
       switch (typeOfFunctionality) {
         case FunctionalityType.CalculateDeliveryCost:
-          await this.deliveryCostService.getDeliveryCost()
+          const cliCostTable = this.cliTable.initializeTable(
+            ['Package Id', 'Discounted Amount', 'Total after discount'],
+            [20, 20, 20],
+            true,
+          )
+          const costResult = await this.deliveryCostController.getDeliveryCost()
+          costResult.map((item) => {
+            cliCostTable.push([
+              item.packageId,
+              item.totalDiscountedAmount,
+              item.totalDeliveryCostAfterDiscount,
+            ])
+          })
+
+          console.log('Calculated delivery cost for packages are as follows: ')
+          console.log(cliCostTable.toString())
+
           break
         case FunctionalityType.CalculateDeliveryTime:
           const cliTable = this.cliTable.initializeTable(
