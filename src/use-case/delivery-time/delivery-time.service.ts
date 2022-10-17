@@ -14,6 +14,7 @@ import {
 } from './utils/assign-vehicle'
 import { getPackageComboPerTrip } from './utils/get-package-combo-per-trip'
 import { getShipmentArrivalTime } from './utils/get-shipment-arrival-time'
+import { updateVechileStates } from './utils/update-vehicle-states'
 
 export class DeliveryTimeResultDto {
   packageId: string
@@ -111,11 +112,11 @@ export class DeliveryTimeService {
       // update the vechile state
       // cause 1 vechile is assigned to this trip
       // store return time for this vechile in the state
-      let objIndex = currentVechilesAvailabiltyState.findIndex(
-        (obj) => obj.vechileNo == assignedVechileNo,
+      currentVechilesAvailabiltyState = updateVechileStates(
+        currentVechilesAvailabiltyState,
+        assignedVechileNo,
+        nextAvailableTimeForVechile,
       )
-      currentVechilesAvailabiltyState[objIndex].returningTimeForThisVechile =
-        nextAvailableTimeForVechile
     }
 
     // sort the package list by sequence
