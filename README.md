@@ -107,6 +107,8 @@ Problem are solved in different PR, added the comment inside the code for better
 If you interested
 [Random analysis sketch of the problem 02(Github link)](./result/sketch.png)
 
+But see the main, should be the best, because done a multiple enchancement in the [PR here](https://github.com/kenchoong/courrier-service/pulls?q=is%3Apr+is%3Aclosed)
+
 # Architecture
 
 This solution is build based on Domain Driven Design(DDD) and Clean Architecture.
