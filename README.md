@@ -66,7 +66,7 @@ PKG3 10 100 OFR003
 
 To save your time, here is the outcome
 
-![problem 01 outcome](./result/delivery-cost.png)
+![problem 01 outcome](./result/delivery-cost-1.png)
 
 For Problem 02, CLI keep asking question to collect input based on requirement
 
