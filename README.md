@@ -104,6 +104,10 @@ Problem are solved in different PR, added the comment inside the code for better
 **Problem 02**
 [Feat/delivery time](https://github.com/kenchoong/courrier-service/pull/3)
 
+**Edge cases**
+[PR: Feat/delivery time edge case](https://github.com/kenchoong/courrier-service/pull/11)
+[Refer to this issues](https://github.com/kenchoong/courrier-service/issues/10)
+
 If you interested
 [Random analysis sketch of the problem 02(Github link)](./result/sketch.png)
 
