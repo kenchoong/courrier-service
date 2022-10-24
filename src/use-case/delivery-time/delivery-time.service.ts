@@ -12,7 +12,7 @@ import {
   assignVechileForThisTrip,
   VechileStateDto,
 } from './utils/assign-vehicle'
-import { getPackageComboPerTrip } from './utils/get-package-combo-per-trip'
+import { getPackageComboSequence } from './utils/get-package-combo-sequence'
 import { getShipmentArrivalTime } from './utils/get-shipment-arrival-time'
 import { updateVechileStates } from './utils/update-vehicle-states'
 
@@ -36,28 +36,9 @@ export class DeliveryTimeService {
     const { vechileDetails, packageList } = input
     const { noOfVechiles, maxSpeed, maxCarriableWeight } = vechileDetails
 
-    // Initialize remaining package list,
-    // at begining is the package list itself
-    let remainingPackageList = [...packageList]
+    const deliveryComboSequence: PackageDtoForTime[][] =
+      getPackageComboSequence(packageList, maxCarriableWeight)
 
-    // Get the delivery combo for each trip
-    // package closest to maxCarriableWeight go first
-    // delivery sequence store in an array
-    const deliveryComboSequence: PackageDtoForTime[][] = []
-    while (remainingPackageList.length > 0) {
-      const combo = getPackageComboPerTrip(
-        remainingPackageList,
-        maxCarriableWeight,
-      )
-
-      deliveryComboSequence.push(combo)
-
-      remainingPackageList = remainingPackageList.filter(
-        (eachPackage) => !combo.find((eachCombo) => eachCombo === eachPackage),
-      )
-    }
-
-    // Initialize an array to represent avaialble vechiles available time
     let currentVechilesAvailabiltyState: VechileStateDto[] = Array(noOfVechiles)
       .fill({})
       .map((_, index) => {
@@ -72,7 +53,7 @@ export class DeliveryTimeService {
     for (const packageComboForThisTrip of deliveryComboSequence) {
       // Get each package need how many time to deliver
       const packageNeedTimeList: PackageTimeNeededDto[] =
-        packageComboForThisTrip.map((packageDto) => {
+        packageComboForThisTrip.map((packageDto: PackageDtoForTime) => {
           const timeNeeded = getShipmentArrivalTime(
             packageDto.distanceInKm,
             maxSpeed,
@@ -84,9 +65,6 @@ export class DeliveryTimeService {
           }
         })
 
-      // assign vechile for this package combo
-      // return the vechile number
-      // the time needed for this vechile to return
       const {
         assignedVechileNo,
         nextAvailableTimeForVechile,
@@ -109,9 +87,6 @@ export class DeliveryTimeService {
         })
       })
 
-      // update the vechile state
-      // cause 1 vechile is assigned to this trip
-      // store return time for this vechile in the state
       currentVechilesAvailabiltyState = updateVechileStates(
         currentVechilesAvailabiltyState,
         assignedVechileNo,
@@ -119,7 +94,6 @@ export class DeliveryTimeService {
       )
     }
 
-    // sort the package list by sequence
     const result = packagesEstimatedDeliverTime.sort(
       (previos, current) => previos.sequence - current.sequence,
     )
@@ -128,7 +102,6 @@ export class DeliveryTimeService {
 
     for (const packageDeliveredTime of result) {
       // calculate the total delivery cost
-      // for each package
       const { totalDiscountedAmount, totalDeliveryCostAfterDiscount } =
         await this.deliveryCostService.getPackagePriceDiscount({
           baseDeliveryCost: packageDeliveredTime.baseDeliveryCost,
