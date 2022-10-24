@@ -13,6 +13,9 @@ import {
 } from './delivery-time.dto'
 import { DeliveryCostService } from '../delivery-cost/delivery-cost.service'
 import { DeliveryCostCalculatedDetails } from '../delivery-cost/delivery-cost.dto'
+import { mockedThreePackagesShouldSendFirst } from './utils/mocks/mock-three-packages-should-send-first..mock'
+import { mockedFourPackageShouldDeliveryFirst } from './utils/mocks/mock-four-packages-should-send-first.mock'
+import { mockFivePackagesShouldSendFirst } from './utils/mocks/mock-five-packages-should-send-first.mock'
 
 const mockedDeliveryCostService = mock<DeliveryCostService>()
 
@@ -39,7 +42,7 @@ describe('DeliveryTimeService', () => {
     expect(deliveryCostService).toBeDefined()
   })
 
-  it('Delivery time', async () => {
+  it('Delivery time standard requirement', async () => {
     const mockedOrignalPackageListStepO1: PackageDtoForTime[] = [
       {
         packageId: 'pkg1',
@@ -174,7 +177,301 @@ describe('DeliveryTimeService', () => {
       },
     ]
 
-    expect(mockedDeliveryCostService.getPackagePriceDiscount).toBeCalledTimes(5)
+    //expect(mockedDeliveryCostService.getPackagePriceDiscount).toBeCalledTimes(5)
+    expect(result).toEqual(outcome)
+  })
+
+  it('Delivery time, 3 packages send together', async () => {
+    // P1 0 1100 1.42
+    // P2 0 1100 1.42
+    // P3 105 1995 4.26
+    // P4 0 1590 7.10
+    // P5 0 1600 1.42
+
+    const input = {
+      vechileDetails: {
+        noOfVechiles: 1,
+        maxSpeed: 70,
+        maxCarriableWeight: 200,
+      },
+      packageList: mockedThreePackagesShouldSendFirst,
+    }
+
+    const mockCostResult: DeliveryCostCalculatedDetails[] = [
+      {
+        packageId: 'pkg1',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 0,
+        totalDeliveryCostAfterDiscount: 1100,
+      },
+      {
+        packageId: 'pkg2',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 0,
+        totalDeliveryCostAfterDiscount: 1100,
+      },
+      {
+        packageId: 'pkg3',
+        totalDiscountedAmount: 105,
+        totalDeliveryCostBeforeDiscount: 2100,
+        totalDeliveryCostAfterDiscount: 1995,
+      },
+      {
+        packageId: 'pkg4',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 0,
+        totalDeliveryCostAfterDiscount: 1590,
+      },
+      {
+        packageId: 'pkg5',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 0,
+        totalDeliveryCostAfterDiscount: 1600,
+      },
+    ]
+
+    mockedDeliveryCostService.getPackagePriceDiscount
+      .mockResolvedValueOnce(mockCostResult[0])
+      .mockResolvedValueOnce(mockCostResult[1])
+      .mockResolvedValueOnce(mockCostResult[2])
+      .mockResolvedValueOnce(mockCostResult[3])
+      .mockResolvedValueOnce(mockCostResult[4])
+
+    const outcome: DeliveryTimeResultDto[] = [
+      {
+        packageId: 'pkg1',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 1100,
+      },
+
+      {
+        packageId: 'pkg2',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 1100,
+      },
+
+      {
+        packageId: 'pkg3',
+        totalDiscountedAmount: 105,
+        estimatedDeliveryTime: 4.26,
+        totalDeliveryCostAfterDiscount: 1995,
+      },
+
+      {
+        packageId: 'pkg4',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 7.1,
+        totalDeliveryCostAfterDiscount: 1590,
+      },
+
+      {
+        packageId: 'pkg5',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 1600,
+      },
+    ]
+
+    const result = await deliveryTimeService.calculateEstimatedDeliveryTime(
+      input,
+    )
+
+    expect(result).toEqual(outcome)
+  })
+
+  it('Delivery time, 4 packages send together', async () => {
+    const input = {
+      vechileDetails: {
+        noOfVechiles: 1,
+        maxSpeed: 70,
+        maxCarriableWeight: 200,
+      },
+      packageList: mockedFourPackageShouldDeliveryFirst,
+    }
+
+    //Base Delivery Cost + (Package Total Weight * 10) +
+    //(Distance to Destination * 5) =
+
+    const mockCostResult: DeliveryCostCalculatedDetails[] = [
+      {
+        packageId: 'pkg1',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 900,
+        totalDeliveryCostAfterDiscount: 900,
+      },
+      {
+        packageId: 'pkg2',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 1100,
+        totalDeliveryCostAfterDiscount: 1100,
+      },
+      {
+        packageId: 'pkg3',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 1000,
+        totalDeliveryCostAfterDiscount: 1000,
+      },
+      {
+        packageId: 'pkg4',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 1300,
+        totalDeliveryCostAfterDiscount: 1300,
+      },
+      {
+        packageId: 'pkg5',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 0,
+        totalDeliveryCostAfterDiscount: 1600,
+      },
+    ]
+
+    mockedDeliveryCostService.getPackagePriceDiscount
+      .mockResolvedValueOnce(mockCostResult[0])
+      .mockResolvedValueOnce(mockCostResult[1])
+      .mockResolvedValueOnce(mockCostResult[2])
+      .mockResolvedValueOnce(mockCostResult[3])
+      .mockResolvedValueOnce(mockCostResult[4])
+
+    const outcome: DeliveryTimeResultDto[] = [
+      {
+        packageId: 'pkg1',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 900,
+      },
+
+      {
+        packageId: 'pkg2',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 1100,
+      },
+
+      {
+        packageId: 'pkg3',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 1000,
+      },
+
+      {
+        packageId: 'pkg4',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 1300,
+      },
+
+      {
+        packageId: 'pkg5',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 4.26,
+        totalDeliveryCostAfterDiscount: 1600,
+      },
+    ]
+
+    const result = await deliveryTimeService.calculateEstimatedDeliveryTime(
+      input,
+    )
+
+    expect(result).toEqual(outcome)
+  })
+
+  it('Delivery time, 5 packages send together', async () => {
+    const input = {
+      vechileDetails: {
+        noOfVechiles: 1,
+        maxSpeed: 70,
+        maxCarriableWeight: 200,
+      },
+      packageList: mockFivePackagesShouldSendFirst,
+    }
+
+    //Base Delivery Cost + (Package Total Weight * 10) +
+    //(Distance to Destination * 5) =
+
+    const mockCostResult: DeliveryCostCalculatedDetails[] = [
+      {
+        packageId: 'pkg1',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 900,
+        totalDeliveryCostAfterDiscount: 900,
+      },
+      {
+        packageId: 'pkg2',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 1100,
+        totalDeliveryCostAfterDiscount: 1100,
+      },
+      {
+        packageId: 'pkg3',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 1000,
+        totalDeliveryCostAfterDiscount: 1000,
+      },
+      {
+        packageId: 'pkg4',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 1300,
+        totalDeliveryCostAfterDiscount: 1300,
+      },
+      {
+        packageId: 'pkg5',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 0,
+        totalDeliveryCostAfterDiscount: 650,
+      },
+    ]
+
+    mockedDeliveryCostService.getPackagePriceDiscount
+      .mockResolvedValueOnce(mockCostResult[0])
+      .mockResolvedValueOnce(mockCostResult[1])
+      .mockResolvedValueOnce(mockCostResult[2])
+      .mockResolvedValueOnce(mockCostResult[3])
+      .mockResolvedValueOnce(mockCostResult[4])
+
+    const outcome: DeliveryTimeResultDto[] = [
+      {
+        packageId: 'pkg1',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 900,
+      },
+
+      {
+        packageId: 'pkg2',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 1100,
+      },
+
+      {
+        packageId: 'pkg3',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 1000,
+      },
+
+      {
+        packageId: 'pkg4',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 1300,
+      },
+
+      {
+        packageId: 'pkg5',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 650,
+      },
+    ]
+
+    const result = await deliveryTimeService.calculateEstimatedDeliveryTime(
+      input,
+    )
+
     expect(result).toEqual(outcome)
   })
 })
