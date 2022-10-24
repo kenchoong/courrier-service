@@ -177,7 +177,7 @@ describe('DeliveryTimeService', () => {
       },
     ]
 
-    //expect(mockedDeliveryCostService.getPackagePriceDiscount).toBeCalledTimes(5)
+    expect(mockedDeliveryCostService.getPackagePriceDiscount).toBeCalledTimes(5)
     expect(result).toEqual(outcome)
   })
 
