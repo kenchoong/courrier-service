@@ -16,6 +16,7 @@ import { DeliveryCostCalculatedDetails } from '../delivery-cost/delivery-cost.dt
 import { mockedThreePackagesShouldSendFirst } from './utils/mocks/mock-three-packages-should-send-first..mock'
 import { mockedFourPackageShouldDeliveryFirst } from './utils/mocks/mock-four-packages-should-send-first.mock'
 import { mockFivePackagesShouldSendFirst } from './utils/mocks/mock-five-packages-should-send-first.mock'
+import { mockUltimateSituation } from './utils/mocks/mock-ultimate-situation.mock'
 
 const mockedDeliveryCostService = mock<DeliveryCostService>()
 
@@ -291,9 +292,6 @@ describe('DeliveryTimeService', () => {
       packageList: mockedFourPackageShouldDeliveryFirst,
     }
 
-    //Base Delivery Cost + (Package Total Weight * 10) +
-    //(Distance to Destination * 5) =
-
     const mockCostResult: DeliveryCostCalculatedDetails[] = [
       {
         packageId: 'pkg1',
@@ -388,9 +386,6 @@ describe('DeliveryTimeService', () => {
       packageList: mockFivePackagesShouldSendFirst,
     }
 
-    //Base Delivery Cost + (Package Total Weight * 10) +
-    //(Distance to Destination * 5) =
-
     const mockCostResult: DeliveryCostCalculatedDetails[] = [
       {
         packageId: 'pkg1',
@@ -465,6 +460,131 @@ describe('DeliveryTimeService', () => {
         totalDiscountedAmount: 0,
         estimatedDeliveryTime: 1.42,
         totalDeliveryCostAfterDiscount: 650,
+      },
+    ]
+
+    const result = await deliveryTimeService.calculateEstimatedDeliveryTime(
+      input,
+    )
+
+    expect(result).toEqual(outcome)
+  })
+
+  it('Delivery time, 7 packages, cover all situation together', async () => {
+    // how it works
+    // https://github.com/kenchoong/courrier-service/issues/10#issuecomment-1289250226
+
+    const input = {
+      vechileDetails: {
+        noOfVechiles: 1,
+        maxSpeed: 70,
+        maxCarriableWeight: 200,
+      },
+      packageList: mockUltimateSituation,
+    }
+
+    const mockCostResult: DeliveryCostCalculatedDetails[] = [
+      {
+        packageId: 'pkg1',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 900,
+        totalDeliveryCostAfterDiscount: 900,
+      },
+      {
+        packageId: 'pkg2',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 1100,
+        totalDeliveryCostAfterDiscount: 1100,
+      },
+      {
+        packageId: 'pkg3',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 1000,
+        totalDeliveryCostAfterDiscount: 1000,
+      },
+
+      {
+        packageId: 'pkg5',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 0,
+        totalDeliveryCostAfterDiscount: 1550,
+      },
+      {
+        packageId: 'pkg6',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 1400,
+        totalDeliveryCostAfterDiscount: 1400,
+      },
+      {
+        packageId: 'pkg7',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 1700,
+        totalDeliveryCostAfterDiscount: 1700,
+      },
+      {
+        packageId: 'pkg8',
+        totalDiscountedAmount: 0,
+        totalDeliveryCostBeforeDiscount: 1200,
+        totalDeliveryCostAfterDiscount: 1200,
+      },
+    ]
+
+    mockedDeliveryCostService.getPackagePriceDiscount
+      .mockResolvedValueOnce(mockCostResult[0])
+      .mockResolvedValueOnce(mockCostResult[1])
+      .mockResolvedValueOnce(mockCostResult[2])
+      .mockResolvedValueOnce(mockCostResult[3])
+      .mockResolvedValueOnce(mockCostResult[4])
+      .mockResolvedValueOnce(mockCostResult[5])
+      .mockResolvedValueOnce(mockCostResult[6])
+
+    const outcome: DeliveryTimeResultDto[] = [
+      {
+        packageId: 'pkg1',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 900,
+      },
+
+      {
+        packageId: 'pkg2',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 1100,
+      },
+
+      {
+        packageId: 'pkg3',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 1.42,
+        totalDeliveryCostAfterDiscount: 1000,
+      },
+
+      {
+        packageId: 'pkg5',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 6.96, //1.28(90/70) +  5.68(2.84*2)
+        totalDeliveryCostAfterDiscount: 1550,
+      },
+      {
+        packageId: 'pkg6',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 4.12, // 1.28(90/70) + 2.84(1.42 * 2),
+        totalDeliveryCostAfterDiscount: 1400,
+      },
+
+      {
+        packageId: 'pkg7',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 4.26, // 1.42(100/70) + 2.84(1.42 * 2),
+        totalDeliveryCostAfterDiscount: 1700,
+      },
+
+      {
+        packageId: 'pkg8',
+        totalDiscountedAmount: 0,
+        estimatedDeliveryTime: 6.68, //1(70/70)  + 5.68(2.84 * 2),
+        totalDeliveryCostAfterDiscount: 1200,
       },
     ]
 
