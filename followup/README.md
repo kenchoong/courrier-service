@@ -79,6 +79,9 @@ Why using `nearby` in URL?
 
 Because I want to make a new resource, which will more clear to represent that this API is to get the restaurant nearby a user.
 
-That's it, just some follow up answer for the question asked during the interview, will I think I able to answer, just miss up during the interview.
+
+# Conclusion
+
+That's it, just some follow up answer for the question asked during the interview, will I think I able to answer at that point, just for whatever reason, cannot answer properly during that time.
 
 But of course, still a lot I dont know, I will keep research more in location domain.
